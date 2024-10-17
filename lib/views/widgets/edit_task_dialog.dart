@@ -1,28 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:math';
-import '../../models/task.dart';
+import '../../models/task.dart' as Task;
 import '../../providers/task_provider.dart';
 
-class CreateTaskDialog extends StatefulWidget {
-  final WidgetRef ref;
+class EditTaskDialog extends ConsumerStatefulWidget {
+  final int taskId;
+  final String title;
+  final String description;
+  final DateTime? dueDate;
+  final bool isCompleted;
 
-  CreateTaskDialog({required this.ref});
+  EditTaskDialog({
+    required this.taskId,
+    required this.title,
+    required this.description,
+    required this.dueDate,
+    required this.isCompleted,
+  });
 
   @override
-  _CreateTaskDialogState createState() => _CreateTaskDialogState();
+  _EditTaskDialogState createState() => _EditTaskDialogState();
 }
 
-class _CreateTaskDialogState extends State<CreateTaskDialog> {
+class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   DateTime? _selectedDueDate;
 
-  // Method to show the date picker dialog
+  @override
+  void initState() {
+    super.initState();
+    titleController.text = widget.title;
+    descriptionController.text = widget.description;
+    _selectedDueDate = widget.dueDate;
+  }
+
   Future<void> _selectDueDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDueDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
@@ -33,16 +49,10 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
     }
   }
 
-  // Method to generate a unique ID for each task
-  int _generateTaskId() {
-    final random = Random();
-    return random.nextInt(100000); // Generates a random number as task ID
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create New Task'),
+      title: Text('Edit Task'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -87,7 +97,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pop();
           },
           child: Text('Cancel'),
         ),
@@ -95,25 +105,17 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
           onPressed: () {
             String taskTitle = titleController.text;
             String taskDescription = descriptionController.text;
+            ref.read(taskProvider.notifier).editTask(Task.Task(
+                  id: widget.taskId,
+                  title: taskTitle,
+                  description: taskDescription,
+                  dueDate: _selectedDueDate,
+                  isCompleted: widget.isCompleted,
+                ));
 
-            // Generate a new task ID
-            int taskId = _generateTaskId();
-
-            // Add the new task using the task provider
-            widget.ref.read(taskProvider.notifier).addTask(
-                  Task(
-                    id: taskId,
-                    title: taskTitle,
-                    description: taskDescription,
-                    dueDate: _selectedDueDate,
-                    isCompleted: false,
-                  ),
-                );
-
-            Navigator.of(context)
-                .pop(); // Close the dialog after creating the task
+            Navigator.of(context).pop();
           },
-          child: Text('Create'),
+          child: Text('Edit'),
         ),
       ],
     );

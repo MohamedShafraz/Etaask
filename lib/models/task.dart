@@ -1,35 +1,59 @@
 class Task {
-  final int? id;
+  final int id;
   final String title;
   final String description;
   final DateTime? dueDate;
   final bool isCompleted;
 
   Task({
-    this.id,
+    required this.id,
     required this.title,
     required this.description,
     this.dueDate,
-    required this.isCompleted,
+    this.isCompleted = false,
   });
 
-  Map<String, dynamic> toMap() {
+  Task copyWith({
+    int? id,
+    String? title,
+    String? description,
+    DateTime? dueDate,
+    bool? isCompleted,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      dueDate: dueDate ?? this.dueDate,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
+
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'title': title,
       'description': description,
-      'dueDate': dueDate != null ? dueDate!.toIso8601String() : null,
+      'dueDate': dueDate?.toIso8601String(),
       'isCompleted': isCompleted ? 1 : 0,
     };
   }
 
-  static Task fromMap(Map<String, dynamic> map) {
+  factory Task.fromMap(Map<String, dynamic> taskMap) {
     return Task(
-      id: map['id'],
-      title: map['title'],
-      description: map['description'],
-      dueDate: map['dueDate'] != null ? DateTime.parse(map['dueDate']) : null,
-      isCompleted: map['isCompleted'] == 1,
+      id: taskMap['id'],
+      title: taskMap['title'],
+      description: taskMap['description'],
+      dueDate: taskMap['dueDate'] != null
+          ? DateTime.parse(taskMap['dueDate'])
+          : null,
+      isCompleted: taskMap['isCompleted'] ==
+          1, // Assuming SQLite stores it as an integer
     );
+  }
+
+  static Future<List<Task>> fromList(
+      List<Map<String, dynamic>> taskList) async {
+    return taskList.map((taskMap) => Task.fromMap(taskMap)).toList();
   }
 }

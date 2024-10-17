@@ -22,11 +22,14 @@ class TaskDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Details'),
+        title: Text(
+          'Task Details',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: onEdit, // Trigger the edit functionality
+            onPressed: onEdit,
           ),
           IconButton(
             icon: Icon(Icons.delete),

@@ -70,22 +70,28 @@ class TaskDetailsScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    onEdit(); // Trigger the edit callback
+                    onEdit();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue, // Edit button color
                   ),
-                  child: Text('Edit'),
+                  child: Text(
+                    'Edit',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    onDelete(); // Trigger the delete callback
-                    Navigator.pop(context); // Go back after deleting
+                    onDelete();
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red, // Delete button color
                   ),
-                  child: Text('Delete'),
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),

@@ -1,13 +1,37 @@
+import 'package:etaask/models/task.dart';
+import 'package:etaask/views/widgets/edit_task_dialog.dart';
 import 'package:flutter/material.dart';
-import 'task_details_screen.dart'; // Import the details screen
+import '../../providers/task_provider.dart';
+import 'task_details_screen.dart';
+
+void _showEditTaskDialog(BuildContext context, Task task) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      try {
+        return EditTaskDialog(
+          taskId: task.id,
+          title: task.title,
+          description: task.description,
+          dueDate: task.dueDate,
+          isCompleted: task.isCompleted,
+        );
+      } catch (err) {
+        return Text(err.toString());
+      }
+    },
+  );
+}
 
 class TaskCard extends StatelessWidget {
+  final int taskId;
   final String title;
   final String description;
   final DateTime? dueDate;
   final bool isCompleted;
 
   TaskCard({
+    required this.taskId,
     required this.title,
     required this.description,
     required this.isCompleted,
@@ -18,7 +42,6 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigate to the TaskDetailsScreen with the edit and delete callbacks
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -28,15 +51,16 @@ class TaskCard extends StatelessWidget {
               dueDate: dueDate,
               isCompleted: isCompleted,
               onEdit: () {
-                // Define what happens when the user presses "Edit"
-                print("Edit Task: $title");
-                // You can navigate to an edit form or show a modal here.
+                _showEditTaskDialog(
+                    context,
+                    Task(
+                        id: taskId,
+                        title: title,
+                        description: description,
+                        dueDate: dueDate,
+                        isCompleted: isCompleted));
               },
-              onDelete: () {
-                // Define what happens when the user presses "Delete"
-                print("Delete Task: $title");
-                // You can remove the task.dart from your list here.
-              },
+              onDelete: () {},
             ),
           ),
         );
@@ -45,7 +69,7 @@ class TaskCard extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         decoration: BoxDecoration(
-          color: Color(0xFFB0D4F1), // Light blue background color
+          color: Color(0xFFB0D4F1),
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
@@ -63,7 +87,7 @@ class TaskCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title, // Display the task title
+                    title,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

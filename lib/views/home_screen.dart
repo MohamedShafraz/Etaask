@@ -12,7 +12,7 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Task Manager',
+          'eTaask',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Color(0xFF182c54),
@@ -25,6 +25,7 @@ class HomeScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final task = tasks[index];
                 return TaskCard(
+                  taskId: task.id,
                   title: task.title,
                   description: task.description,
                   isCompleted: task.isCompleted,
@@ -57,7 +58,7 @@ class HomeScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return CreateTaskDialog(ref: ref); // Use the new widget
+        return CreateTaskDialog(ref: ref);
       },
     );
   }
