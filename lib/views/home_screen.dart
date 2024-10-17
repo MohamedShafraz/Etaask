@@ -2,6 +2,7 @@ import 'package:etaask/views/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:etaask/providers/task_provider.dart';
+import 'package:etaask/views/widgets/create_task_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   @override
@@ -53,59 +54,10 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _showCreateTaskDialog(BuildContext context, WidgetRef ref) {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Create New Task'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    labelText: 'Task Title',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                    labelText: 'Task Description',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String taskTitle = titleController.text;
-                String taskDescription = descriptionController.text;
-
-                ref.read(taskProvider.notifier).addTask(
-                      Task(title: taskTitle, description: taskDescription),
-                    );
-
-                Navigator.of(context).pop();
-              },
-              child: Text('Create'),
-            ),
-          ],
-        );
+        return CreateTaskDialog(ref: ref); // Use the new widget
       },
     );
   }

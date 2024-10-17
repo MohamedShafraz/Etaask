@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 class TaskCard extends StatelessWidget {
   final String title;
   final String description;
+  final DateTime? dueDate;
   final bool isCompleted;
 
-  TaskCard(
-      {required this.title,
-      required this.description,
-      required this.isCompleted}); // Constructor
+  TaskCard({
+    required this.title,
+    required this.description,
+    required this.isCompleted,
+    this.dueDate, // Constructor parameter for due date
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +54,9 @@ class TaskCard extends StatelessWidget {
                 ),
                 SizedBox(height: 12.0),
                 Text(
-                  'Due on: 29 Sep',
+                  dueDate != null
+                      ? 'Due on: ${dueDate!.toLocal().toString().split(' ')[0]}'
+                      : 'No Due Date', // Display the due date dynamically
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
@@ -61,10 +66,20 @@ class TaskCard extends StatelessWidget {
             ),
           ),
           SizedBox(width: 16.0),
-          Text(
-            isCompleted ? "Completed" : "Not Completed",
-            style: TextStyle(
-                color: isCompleted ? Color(0xFF00FF00) : Color(0xFFFFFF00)),
+          // Display the task status with color based on its completion state
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            decoration: BoxDecoration(
+              color: isCompleted ? Colors.green : Colors.yellow,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              isCompleted ? "Completed" : "Not Completed",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
