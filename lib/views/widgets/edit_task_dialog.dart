@@ -57,7 +57,9 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Edit Task'),
+      title: Text(
+        'Edit Task',
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -84,15 +86,21 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
                 Expanded(
                   child: Text(
                     _selectedDueDate == null
-                        ? 'No Due Date Selected'
+                        ? 'Due Date:'
                         : 'Due Date: ${_selectedDueDate!.toLocal()}'
                             .split(' ')[0],
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
                 ),
                 TextButton(
                   onPressed: () => _selectDueDate(context),
-                  child: Text('Select Due Date'),
+                  child: _selectedDueDate == null
+                      ? Text('Select Due Date')
+                      : Text('${_selectedDueDate!.toLocal()}'
+                          .split(' ')[0]
+                          .toString()),
                 ),
               ],
             ),

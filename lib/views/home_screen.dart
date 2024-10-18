@@ -1,8 +1,8 @@
-import 'package:etaask/views/widgets/task_card.dart';
+import '../views/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:etaask/providers/task_provider.dart';
-import 'package:etaask/views/widgets/create_task_dialog.dart';
+import '../providers/task_provider.dart';
+import '../views/widgets/create_task_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   @override
