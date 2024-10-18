@@ -55,10 +55,14 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
         'Edit Task',
+        style: TextStyle(
+          color: Color(0xff182c55),
+        ),
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -68,6 +72,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
               controller: titleController,
               decoration: InputDecoration(
                 labelText: 'Task Title',
+                labelStyle: TextStyle(color: Color(0xff182c55)),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -76,6 +81,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
               controller: descriptionController,
               decoration: InputDecoration(
                 labelText: 'Task Description',
+                labelStyle: TextStyle(color: Color(0xff182c55)),
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -91,6 +97,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
                             .split(' ')[0],
                     style: TextStyle(
                       fontSize: 16,
+                      color: Color(0xff182c55),
                     ),
                   ),
                 ),
@@ -101,6 +108,9 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
                       : Text('${_selectedDueDate!.toLocal()}'
                           .split(' ')[0]
                           .toString()),
+                  style: TextButton.styleFrom(
+                    primary: Color(0xff182c55),
+                  ),
                 ),
               ],
             ),
@@ -110,7 +120,10 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
               children: [
                 Text(
                   'Mark as Completed',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xff182c55),
+                  ),
                 ),
                 Switch(
                   value: _isCompleted,
@@ -119,6 +132,8 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
                       _isCompleted = value;
                     });
                   },
+                  activeColor: Colors.white,
+                  activeTrackColor: Color(0xff182c55),
                 ),
               ],
             ),
@@ -130,9 +145,15 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: Color(0xff182c55)),
+          ),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xff182c55),
+          ),
           onPressed: () async {
             String taskTitle = titleController.text.trim();
             String taskDescription = descriptionController.text.trim();
@@ -163,7 +184,10 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
 
             Navigator.of(context).pop();
           },
-          child: Text('Edit'),
+          child: Text(
+            'Edit',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );

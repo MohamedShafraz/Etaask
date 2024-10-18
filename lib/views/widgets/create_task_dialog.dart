@@ -44,7 +44,12 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create New Task'),
+      title: Text(
+        'Create New Task',
+        style: TextStyle(
+          color: Color(0xff182c55),
+        ),
+      ),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -55,6 +60,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                 controller: titleController,
                 decoration: InputDecoration(
                   labelText: 'Task Title',
+                  labelStyle: TextStyle(color: Color(0xff182c55)),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -69,6 +75,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                 controller: descriptionController,
                 decoration: InputDecoration(
                   labelText: 'Task Description',
+                  labelStyle: TextStyle(color: Color(0xff182c55)),
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
@@ -90,6 +97,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                               .split(' ')[0],
                       style: TextStyle(
                         fontSize: 16,
+                        color: Color(0xff182c55),
                       ),
                     ),
                   ),
@@ -97,9 +105,10 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                     onPressed: () => _selectDueDate(context),
                     child: _selectedDueDate == null
                         ? Text('Select Due Date')
-                        : Text('${_selectedDueDate!.toLocal()}'
-                            .split(' ')[0]
-                            .toString()),
+                        : Text('${_selectedDueDate!.toLocal()}'.split(' ')[0]),
+                    style: TextButton.styleFrom(
+                      primary: Color(0xff182c55),
+                    ),
                   ),
                 ],
               ),
@@ -120,11 +129,14 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: Color(0xff182c55)),
+          ),
         ),
         ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Color(0xFF182c55)),
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xFF182c55),
           ),
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
