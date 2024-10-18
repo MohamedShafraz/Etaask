@@ -54,7 +54,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         backgroundColor: Color(0xFF182C55),
         elevation: 0,
         iconTheme: IconThemeData(
-          color: Colors.white, // Set your desired color for the back button
+          color: Colors.white,
         ),
       ),
       backgroundColor: Color(0xFFF6F7FB),
@@ -145,7 +145,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return EditTaskDialog(
-                                  taskId: task.id!,
+                                  taskId: task.id,
                                   title: task.title,
                                   description: task.description,
                                   dueDate: task.dueDate,
