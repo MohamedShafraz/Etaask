@@ -16,7 +16,7 @@ class HomeScreen extends ConsumerWidget {
           'eTaask',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xFF182c54),
+        backgroundColor: Color(0xFF182c55),
       ),
       body: Column(
         children: [

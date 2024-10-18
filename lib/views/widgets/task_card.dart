@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import '../../database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +26,11 @@ void _showEditTaskDialog(BuildContext context, Task task) {
 
 class TaskCard extends ConsumerWidget {
   final Task task;
-
+  final Color primary = Color(0xFF182c55);
+  final Color? normal = Color.lerp(Colors.blueAccent, Color(0xFF182c55), 0.5);
+  final Color? completed =
+      Color.lerp(Colors.greenAccent, Color(0xFF18da55), 0.5);
+  final Color? due = Color.lerp(Colors.redAccent, Color(0xff800000), 0.7);
   TaskCard({required this.task});
 
   @override
@@ -32,16 +38,17 @@ class TaskCard extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
       elevation: 5,
+      color: due,
       child: ListTile(
         title: Text(
           task.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           task.dueDate != null
               ? 'Due on: ${DateFormat('yMd').format(task.dueDate!)}'
               : 'No Due Date',
-          style: TextStyle(color: Colors.black54),
+          style: TextStyle(color: Colors.white70),
         ),
         trailing: Wrap(
           spacing: 12, // space between two icons
@@ -92,6 +99,7 @@ class TaskCard extends ConsumerWidget {
             context,
             MaterialPageRoute(
               builder: (context) => TaskDetailsScreen(
+                taskTitle: task.title,
                 taskId: task.id,
                 onEdit: () => _showEditTaskDialog(context, task),
                 onDelete: () {

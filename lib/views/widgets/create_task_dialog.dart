@@ -86,7 +86,9 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                           ? 'Due Date:'
                           : 'Due Date: ${_selectedDueDate!.toLocal()}'
                               .split(' ')[0],
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                   TextButton(
@@ -111,6 +113,9 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
           child: Text('Cancel'),
         ),
         ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Color(0xFF182c55)),
+          ),
           onPressed: () async {
             // Validate form only when the Create button is clicked
             if (_formKey.currentState!.validate()) {
@@ -145,7 +150,10 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                   .pop(); // Close the dialog after creating the task
             }
           },
-          child: Text('Create'),
+          child: Text(
+            'Create',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );

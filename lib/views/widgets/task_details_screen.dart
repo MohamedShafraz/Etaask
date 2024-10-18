@@ -4,22 +4,26 @@ import '../../models/task.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
   final int taskId;
+  final String taskTitle;
   final Function onEdit;
   final Function onDelete;
 
   TaskDetailsScreen({
     required this.taskId,
+    required this.taskTitle,
     required this.onEdit,
     required this.onDelete,
   });
 
   @override
-  _TaskDetailsScreenState createState() => _TaskDetailsScreenState();
+  _TaskDetailsScreenState createState() =>
+      _TaskDetailsScreenState(this.taskTitle);
 }
 
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late Future<Task?> _taskFuture;
-
+  final String taskTitle;
+  _TaskDetailsScreenState(this.taskTitle);
   @override
   void initState() {
     super.initState();
@@ -35,8 +39,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Details'),
-        backgroundColor: Colors.blueAccent,
+        title: Text(
+          taskTitle,
+          style: TextStyle(
+            color: Color(0xFF182c55),
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
       body: FutureBuilder<Task?>(
         future: _taskFuture,
@@ -56,7 +65,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  task.title,
+                  "Title:" + task.title,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -64,7 +73,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  task.description,
+                  "Description :" + task.description,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
@@ -95,15 +104,30 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        widget.onEdit();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child:
-                          Text('Edit', style: TextStyle(color: Colors.white)),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            widget.onEdit();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Edit',
+                                  style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -113,8 +137,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
-                      child:
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.white),
+                          SizedBox(
+                            width: 10,
+                          ),
                           Text('Delete', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
