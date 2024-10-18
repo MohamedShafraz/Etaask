@@ -15,7 +15,7 @@ class TaskViewModel extends StateNotifier<List<Task>> {
     ];
   }
 
-  void removeTask(String taskId) {
+  void removeTask(int taskId) {
     state = state.where((task) => task.id != taskId).toList();
   }
 }

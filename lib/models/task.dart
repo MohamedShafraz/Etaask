@@ -47,8 +47,7 @@ class Task {
       dueDate: taskMap['dueDate'] != null
           ? DateTime.parse(taskMap['dueDate'])
           : null,
-      isCompleted: taskMap['isCompleted'] ==
-          1, // Assuming SQLite stores it as an integer
+      isCompleted: taskMap['isCompleted'] == 1,
     );
   }
 

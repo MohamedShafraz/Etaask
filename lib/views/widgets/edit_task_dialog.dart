@@ -1,6 +1,7 @@
+import '../../database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/task.dart' as Task;
+import '../../models/task.dart';
 import '../../providers/task_provider.dart';
 
 class EditTaskDialog extends ConsumerStatefulWidget {
@@ -26,6 +27,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   DateTime? _selectedDueDate;
+  bool _isCompleted = false;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
     titleController.text = widget.title;
     descriptionController.text = widget.description;
     _selectedDueDate = widget.dueDate;
+    _isCompleted = widget.isCompleted;
   }
 
   Future<void> _selectDueDate(BuildContext context) async {
@@ -91,6 +94,24 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
                 ),
               ],
             ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Mark as Completed',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Switch(
+                  value: _isCompleted,
+                  onChanged: (value) {
+                    setState(() {
+                      _isCompleted = value;
+                    });
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -102,16 +123,31 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
           child: Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () {
-            String taskTitle = titleController.text;
-            String taskDescription = descriptionController.text;
-            ref.read(taskProvider.notifier).editTask(Task.Task(
-                  id: widget.taskId,
-                  title: taskTitle,
-                  description: taskDescription,
-                  dueDate: _selectedDueDate,
-                  isCompleted: widget.isCompleted,
-                ));
+          onPressed: () async {
+            String taskTitle = titleController.text.trim();
+            String taskDescription = descriptionController.text.trim();
+
+            if (taskTitle.isEmpty || taskDescription.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Title and Description cannot be empty'),
+                ),
+              );
+              return;
+            }
+
+            Task updateTask = Task(
+              id: widget.taskId,
+              title: taskTitle,
+              description: taskDescription,
+              dueDate: _selectedDueDate,
+              isCompleted: _isCompleted,
+            );
+
+            DatabaseHelper dbHelper = DatabaseHelper();
+            await dbHelper.updateTask(updateTask);
+
+            ref.read(taskProvider.notifier).editTask(updateTask);
 
             Navigator.of(context).pop();
           },

@@ -44,6 +44,27 @@ class DatabaseHelper {
     });
   }
 
+  // Fetch a task by its id
+  Future<Task?> getTaskById(int id) async {
+    final db = await database;
+    print(id);
+    // Query the tasks table where the id matches the provided id
+    final List<Map<String, dynamic>> taskMaps = await db.query(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [id], // Pass the id as an argument
+    );
+
+    // Check if a task was found
+    if (taskMaps.isNotEmpty) {
+      return Task.fromMap(
+          taskMaps.first); // Convert the first found map to a Task
+    }
+
+    // Return null if no task was found with the given id
+    return null;
+  }
+
   // Update a task
   Future<int> updateTask(Task task) async {
     final db = await database;

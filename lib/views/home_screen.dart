@@ -2,6 +2,7 @@ import 'package:etaask/views/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:etaask/providers/task_provider.dart';
+import 'package:etaask/models/task.dart';
 import 'package:etaask/views/widgets/create_task_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -25,30 +26,34 @@ class HomeScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final task = tasks[index];
                 return TaskCard(
-                  taskId: task.id,
-                  title: task.title,
-                  description: task.description,
-                  isCompleted: task.isCompleted,
+                  task: Task(
+                    id: task.id,
+                    title: task.title,
+                    description: task.description,
+                    dueDate: task.dueDate,
+                    isCompleted: task.isCompleted,
+                  ),
                 );
               },
             ),
           ),
           SizedBox(height: 16.0),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: CircleBorder(),
-              padding: EdgeInsets.all(
-                  15), // Adjust padding to control the button size
-            ),
-            onHover: (value) {},
-            onPressed: () => _showCreateTaskDialog(context, ref),
-            child: Icon(
-              Icons.add, // Change icon color on hover
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: CircleBorder(),
+                padding: EdgeInsets.all(15),
+                primary: Color(0xFF182c54),
+              ),
+              onPressed: () => _showCreateTaskDialog(context, ref),
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10),
         ],
       ),
     );
