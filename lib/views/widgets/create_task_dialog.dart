@@ -18,7 +18,8 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   DateTime? _selectedDueDate;
-  final _formKey = GlobalKey<FormState>(); // Form key for validation
+  String? _dueDateError;
+  final _formKey = GlobalKey<FormState>();
 
   Future<void> _selectDueDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -30,6 +31,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
     if (picked != null && picked != _selectedDueDate) {
       setState(() {
         _selectedDueDate = picked;
+        _dueDateError = null;
       });
     }
   }
@@ -45,7 +47,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
       title: Text('Create New Task'),
       content: SingleChildScrollView(
         child: Form(
-          key: _formKey, // Assign the form key
+          key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -101,6 +103,14 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                   ),
                 ],
               ),
+              if (_dueDateError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    _dueDateError!,
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
             ],
           ),
         ),
@@ -108,7 +118,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pop();
           },
           child: Text('Cancel'),
         ),
@@ -117,37 +127,33 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
             backgroundColor: MaterialStateProperty.all(Color(0xFF182c55)),
           ),
           onPressed: () async {
-            // Validate form only when the Create button is clicked
             if (_formKey.currentState!.validate()) {
-              // Check if due date is not selected
               if (_selectedDueDate == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please select a due date')),
-                );
-                return; // Prevent further action if due date is not selected
+                setState(() {
+                  _dueDateError = 'Please select a due date';
+                });
+                return;
               }
 
               String taskTitle = titleController.text.trim();
               String taskDescription = descriptionController.text.trim();
 
-              // Generate task ID
               int taskId = _generateTaskId();
 
               Task newTask = Task(
-                id: taskId, // Explicitly set to null for auto-increment
+                id: taskId,
                 title: taskTitle,
                 description: taskDescription,
-                dueDate: _selectedDueDate, // Ensure correct conversion
+                dueDate: _selectedDueDate,
                 isCompleted: false,
               );
 
               DatabaseHelper dbHelper = DatabaseHelper();
 
-              await dbHelper.insertTask(newTask); // Await the insert operation
+              await dbHelper.insertTask(newTask);
               widget.ref.read(taskProvider.notifier).addTask(newTask);
 
-              Navigator.of(context)
-                  .pop(); // Close the dialog after creating the task
+              Navigator.of(context).pop();
             }
           },
           child: Text(

@@ -52,13 +52,12 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> taskMaps = await db.query(
       'tasks',
       where: 'id = ?',
-      whereArgs: [id], // Pass the id as an argument
+      whereArgs: [id],
     );
 
     // Check if a task was found
     if (taskMaps.isNotEmpty) {
-      return Task.fromMap(
-          taskMaps.first); // Convert the first found map to a Task
+      return Task.fromMap(taskMaps.first);
     }
 
     // Return null if no task was found with the given id

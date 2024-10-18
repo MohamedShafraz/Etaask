@@ -2,13 +2,15 @@ import 'package:etaask/views/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:etaask/providers/task_provider.dart';
-import 'package:etaask/models/task.dart';
 import 'package:etaask/views/widgets/create_task_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasks = ref.watch(taskProvider);
+
+    final completedTasks = tasks.where((task) => task.isCompleted).toList();
+    final incompleteTasks = tasks.where((task) => !task.isCompleted).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -41,20 +43,43 @@ class HomeScreen extends ConsumerWidget {
             )
           else
             Expanded(
-              child: ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  final task = tasks[index];
-                  return TaskCard(
-                    task: Task(
-                      id: task.id,
-                      title: task.title,
-                      description: task.description,
-                      dueDate: task.dueDate,
-                      isCompleted: task.isCompleted,
+              child: ListView(
+                children: [
+                  if (completedTasks.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Text(
+                        'Completed',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF182c55),
+                        ),
+                      ),
                     ),
-                  );
-                },
+                    ...completedTasks
+                        .map((task) => TaskCard(task: task))
+                        .toList(),
+                  ],
+                  if (incompleteTasks.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Text(
+                        'Incomplete Tasks',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF182c55),
+                        ),
+                      ),
+                    ),
+                    ...incompleteTasks
+                        .map((task) => TaskCard(task: task))
+                        .toList(),
+                  ]
+                ],
               ),
             ),
           SizedBox(height: 16.0),

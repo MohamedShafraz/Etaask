@@ -58,7 +58,7 @@ class TaskCard extends ConsumerWidget {
           style: TextStyle(color: Colors.white70),
         ),
         trailing: Wrap(
-          spacing: 12, // space between two icons
+          spacing: 12,
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.edit, color: Colors.blue),
@@ -67,7 +67,6 @@ class TaskCard extends ConsumerWidget {
             IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
-                // Confirm deletion
                 showDialog(
                   context: context,
                   builder: (context) {
@@ -87,7 +86,7 @@ class TaskCard extends ConsumerWidget {
                               SnackBar(
                                   content: Text('Task deleted successfully')),
                             );
-                            Navigator.of(context).pop(); // Close the dialog
+                            Navigator.of(context).pop();
                           },
                           child: Text('Yes'),
                         ),
@@ -118,7 +117,7 @@ class TaskCard extends ConsumerWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Task deleted successfully')),
                   );
-                  Navigator.of(context).pop(); // Close the details screen
+                  Navigator.of(context).pop();
                 },
               ),
             ),

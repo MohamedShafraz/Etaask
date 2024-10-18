@@ -10,7 +10,7 @@ class EditTaskDialog extends ConsumerStatefulWidget {
   final String description;
   final DateTime? dueDate;
   final bool isCompleted;
-  final Function(Task) onUpdate; // New callback function to pass updated task
+  final Function(Task) onUpdate;
 
   EditTaskDialog({
     required this.taskId,
@@ -151,8 +151,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
 
             ref.read(taskProvider.notifier).editTask(updatedTask);
 
-            widget.onUpdate(
-                updatedTask); // Pass updated task back to parent screen
+            widget.onUpdate(updatedTask);
 
             Navigator.of(context).pop();
           },
