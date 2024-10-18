@@ -2,6 +2,8 @@ import 'package:etaask/views/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:etaask/providers/task_provider.dart';
+import 'package:etaask/models/task.dart';
+import 'package:etaask/views/widgets/create_task_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   @override
@@ -11,101 +13,77 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Task Manager',
+          'eTaask',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xFF182c54),
+        backgroundColor: Color(0xFF182c55),
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                final task = tasks[index];
-                return TaskCard(
-                  title: task.title,
-                  description: task.description,
-                  isCompleted: task.isCompleted,
-                );
-              },
+          if (tasks.isEmpty)
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No tasks available!',
+                      style: TextStyle(fontSize: 18, color: Colors.black54),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Click the button below to add a new task.',
+                      style: TextStyle(fontSize: 16, color: Colors.black45),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  final task = tasks[index];
+                  return TaskCard(
+                    task: Task(
+                      id: task.id,
+                      title: task.title,
+                      description: task.description,
+                      dueDate: task.dueDate,
+                      isCompleted: task.isCompleted,
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
           SizedBox(height: 16.0),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: CircleBorder(),
-              padding: EdgeInsets.all(
-                  15), // Adjust padding to control the button size
-            ),
-            onHover: (value) {},
-            onPressed: () => _showCreateTaskDialog(context, ref),
-            child: Icon(
-              Icons.add, // Change icon color on hover
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: CircleBorder(),
+                padding: EdgeInsets.all(15),
+                primary: Color(0xFF182c54),
+              ),
+              onPressed: () => _showCreateTaskDialog(context, ref),
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10),
         ],
       ),
     );
   }
 
   void _showCreateTaskDialog(BuildContext context, WidgetRef ref) {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Create New Task'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                    labelText: 'Task Title',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                    labelText: 'Task Description',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String taskTitle = titleController.text;
-                String taskDescription = descriptionController.text;
-
-                ref.read(taskProvider.notifier).addTask(
-                      Task(title: taskTitle, description: taskDescription),
-                    );
-
-                Navigator.of(context).pop();
-              },
-              child: Text('Create'),
-            ),
-          ],
-        );
+        return CreateTaskDialog(ref: ref);
       },
     );
   }
