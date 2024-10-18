@@ -20,23 +20,43 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                final task = tasks[index];
-                return TaskCard(
-                  task: Task(
-                    id: task.id,
-                    title: task.title,
-                    description: task.description,
-                    dueDate: task.dueDate,
-                    isCompleted: task.isCompleted,
-                  ),
-                );
-              },
+          if (tasks.isEmpty)
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'No tasks available!',
+                      style: TextStyle(fontSize: 18, color: Colors.black54),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Click the button below to add a new task.',
+                      style: TextStyle(fontSize: 16, color: Colors.black45),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  final task = tasks[index];
+                  return TaskCard(
+                    task: Task(
+                      id: task.id,
+                      title: task.title,
+                      description: task.description,
+                      dueDate: task.dueDate,
+                      isCompleted: task.isCompleted,
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
           SizedBox(height: 16.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
