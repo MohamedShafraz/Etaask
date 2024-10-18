@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../database/database_helper.dart';
 import '../../models/task.dart';
+import 'edit_task_dialog.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
   final int taskId;
@@ -16,14 +17,12 @@ class TaskDetailsScreen extends StatefulWidget {
   });
 
   @override
-  _TaskDetailsScreenState createState() =>
-      _TaskDetailsScreenState(this.taskTitle);
+  _TaskDetailsScreenState createState() => _TaskDetailsScreenState();
 }
 
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late Future<Task?> _taskFuture;
-  final String taskTitle;
-  _TaskDetailsScreenState(this.taskTitle);
+
   @override
   void initState() {
     super.initState();
@@ -35,12 +34,18 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     return await db.getTaskById(id);
   }
 
+  void _refreshTaskDetails() {
+    setState(() {
+      _taskFuture = _fetchTaskDetails(widget.taskId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          taskTitle,
+          widget.taskTitle,
           style: TextStyle(
             color: Color(0xFF182c55),
           ),
@@ -65,7 +70,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Title:" + task.title,
+                  "Title: " + task.title,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -73,7 +78,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  "Description :" + task.description,
+                  "Description: " + task.description,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
@@ -104,30 +109,37 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            widget.onEdit();
+                    ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return EditTaskDialog(
+                              taskId: task.id!,
+                              title: task.title,
+                              description: task.description,
+                              dueDate: task.dueDate,
+                              isCompleted: task.isCompleted,
+                              onUpdate: (updatedTask) {
+                                _refreshTaskDetails();
+                              },
+                            );
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit,
+                            color: Colors.white,
                           ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('Edit',
-                                  style: TextStyle(color: Colors.white)),
-                            ],
-                          ),
-                        ),
-                      ],
+                          SizedBox(width: 10),
+                          Text('Edit', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -140,9 +152,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       child: Row(
                         children: [
                           Icon(Icons.delete, color: Colors.white),
-                          SizedBox(
-                            width: 10,
-                          ),
+                          SizedBox(width: 10),
                           Text('Delete', style: TextStyle(color: Colors.white)),
                         ],
                       ),

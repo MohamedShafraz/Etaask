@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import '../../database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,16 +8,19 @@ import '../widgets/task_details_screen.dart';
 import '../../providers/task_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void _showEditTaskDialog(BuildContext context, Task task) {
+void _showEditTaskDialog(BuildContext context, Task task, WidgetRef ref) {
   showDialog(
     context: context,
     builder: (context) {
       return EditTaskDialog(
-        taskId: task.id,
+        taskId: task.id!,
         title: task.title,
         description: task.description,
         dueDate: task.dueDate,
         isCompleted: task.isCompleted,
+        onUpdate: (updatedTask) {
+          ref.read(taskProvider.notifier).editTask(updatedTask);
+        },
       );
     },
   );
@@ -31,6 +33,7 @@ class TaskCard extends ConsumerWidget {
   final Color? completed =
       Color.lerp(Colors.greenAccent, Color(0xFF18da55), 0.5);
   final Color? due = Color.lerp(Colors.redAccent, Color(0xff800000), 0.7);
+
   TaskCard({required this.task});
 
   @override
@@ -38,7 +41,11 @@ class TaskCard extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
       elevation: 5,
-      color: due,
+      color: task.isCompleted
+          ? completed
+          : (task.dueDate != null && task.dueDate!.isBefore(DateTime.now())
+              ? due
+              : normal),
       child: ListTile(
         title: Text(
           task.title,
@@ -55,7 +62,7 @@ class TaskCard extends ConsumerWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.edit, color: Colors.blue),
-              onPressed: () => _showEditTaskDialog(context, task),
+              onPressed: () => _showEditTaskDialog(context, task, ref),
             ),
             IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
@@ -72,8 +79,10 @@ class TaskCard extends ConsumerWidget {
                         TextButton(
                           onPressed: () {
                             DatabaseHelper dbHelper = DatabaseHelper();
-                            dbHelper.deleteTask(task.id);
-                            ref.read(taskProvider.notifier).removeTask(task.id);
+                            dbHelper.deleteTask(task.id!);
+                            ref
+                                .read(taskProvider.notifier)
+                                .removeTask(task.id!);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                   content: Text('Task deleted successfully')),
@@ -100,12 +109,12 @@ class TaskCard extends ConsumerWidget {
             MaterialPageRoute(
               builder: (context) => TaskDetailsScreen(
                 taskTitle: task.title,
-                taskId: task.id,
-                onEdit: () => _showEditTaskDialog(context, task),
+                taskId: task.id!,
+                onEdit: () => _showEditTaskDialog(context, task, ref),
                 onDelete: () {
                   DatabaseHelper dbHelper = DatabaseHelper();
-                  dbHelper.deleteTask(task.id);
-                  ref.read(taskProvider.notifier).removeTask(task.id);
+                  dbHelper.deleteTask(task.id!);
+                  ref.read(taskProvider.notifier).removeTask(task.id!);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Task deleted successfully')),
                   );

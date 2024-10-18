@@ -10,6 +10,7 @@ class EditTaskDialog extends ConsumerStatefulWidget {
   final String description;
   final DateTime? dueDate;
   final bool isCompleted;
+  final Function(Task) onUpdate; // New callback function to pass updated task
 
   EditTaskDialog({
     required this.taskId,
@@ -17,6 +18,7 @@ class EditTaskDialog extends ConsumerStatefulWidget {
     required this.description,
     required this.dueDate,
     required this.isCompleted,
+    required this.onUpdate,
   });
 
   @override
@@ -136,7 +138,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
               return;
             }
 
-            Task updateTask = Task(
+            Task updatedTask = Task(
               id: widget.taskId,
               title: taskTitle,
               description: taskDescription,
@@ -145,9 +147,12 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
             );
 
             DatabaseHelper dbHelper = DatabaseHelper();
-            await dbHelper.updateTask(updateTask);
+            await dbHelper.updateTask(updatedTask);
 
-            ref.read(taskProvider.notifier).editTask(updateTask);
+            ref.read(taskProvider.notifier).editTask(updatedTask);
+
+            widget.onUpdate(
+                updatedTask); // Pass updated task back to parent screen
 
             Navigator.of(context).pop();
           },
