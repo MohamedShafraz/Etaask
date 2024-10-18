@@ -1,3 +1,4 @@
+import 'views/intro_slider.dart';
 import 'views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'views/home_screen.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => SplashScreen(),
+        '/intro': (context) => IntroSlider(),
         '/home': (context) => HomeScreen(), // Your home screen route
       },
     );

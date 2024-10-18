@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,13 +11,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _navigateToIntroSlider();
   }
 
-  void _navigateToHome() async {
-    await Future.delayed(Duration(seconds: 3)); // Wait for 3 seconds
-    Navigator.pushReplacementNamed(
-        context, '/home'); // Replace with your home route
+  void _navigateToIntroSlider() {
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(context, '/intro');
+    });
   }
 
   @override
