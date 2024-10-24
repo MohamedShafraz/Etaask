@@ -55,4 +55,13 @@ class Task {
       List<Map<String, dynamic>> taskList) async {
     return taskList.map((taskMap) => Task.fromMap(taskMap)).toList();
   }
+
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
+        id: json['id'],
+        title: json['title'],
+        description: json['description'],
+        isCompleted: json['isCompleted'] == 1,
+        dueDate:
+            json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
+      );
 }
