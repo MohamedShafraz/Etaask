@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../viewmodels/task_view_model.dart';
-import '../models/task.dart' as Task;
+import '../models/task.dart';
 
 final taskProvider =
-    StateNotifierProvider<TaskViewModel, List<Task.Task>>((ref) {
+    StateNotifierProvider<TaskViewModel, AsyncValue<List<Task>>>((ref) {
   return TaskViewModel();
 });

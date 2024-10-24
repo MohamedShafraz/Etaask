@@ -1,4 +1,4 @@
-import '../../database/database_helper.dart';
+import '../../services/taskService.dart';
 import '../../models/task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +19,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
   final TextEditingController descriptionController = TextEditingController();
   DateTime? _selectedDueDate;
   String? _dueDateError;
+  var _taskService = TaskService();
   final _formKey = GlobalKey<FormState>();
 
   Future<void> _selectDueDate(BuildContext context) async {
@@ -38,7 +39,7 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
 
   int _generateTaskId() {
     final random = Random();
-    return random.nextInt(100000);
+    return random.nextInt(100);
   }
 
   @override
@@ -160,9 +161,10 @@ class _CreateTaskDialogState extends State<CreateTaskDialog> {
                 isCompleted: false,
               );
 
-              DatabaseHelper dbHelper = DatabaseHelper();
-
-              await dbHelper.insertTask(newTask);
+              // DatabaseHelper dbHelper = DatabaseHelper();
+              //
+              // await dbHelper.insertTask(newTask);
+              // var result = await _taskService.insertTask(newTask);
               widget.ref.read(taskProvider.notifier).addTask(newTask);
 
               Navigator.of(context).pop();

@@ -1,3 +1,4 @@
+import '../services/taskService.dart';
 import '../views/widgets/task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,10 +8,7 @@ import '../views/widgets/create_task_dialog.dart';
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tasks = ref.watch(taskProvider);
-
-    final completedTasks = tasks.where((task) => task.isCompleted).toList();
-    final incompleteTasks = tasks.where((task) => !task.isCompleted).toList();
+    final tasksAsyncValue = ref.watch(taskProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -20,86 +18,97 @@ class HomeScreen extends ConsumerWidget {
         ),
         backgroundColor: Color(0xFF182c55),
       ),
-      body: Column(
-        children: [
-          if (tasks.isEmpty)
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'No tasks available!',
-                      style: TextStyle(fontSize: 18, color: Colors.black54),
+      body: tasksAsyncValue.when(
+        data: (tasks) {
+          final completedTasks =
+              tasks.where((task) => task.isCompleted).toList();
+          final incompleteTasks =
+              tasks.where((task) => !task.isCompleted).toList();
+
+          return Column(
+            children: [
+              if (tasks.isEmpty)
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'No tasks available!',
+                          style: TextStyle(fontSize: 18, color: Colors.black54),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Click the button below to add a new task.',
+                          style: TextStyle(fontSize: 16, color: Colors.black45),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Click the button below to add a new task.',
-                      style: TextStyle(fontSize: 16, color: Colors.black45),
-                    ),
-                  ],
+                  ),
+                )
+              else
+                Expanded(
+                  child: ListView(
+                    children: [
+                      if (completedTasks.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: Text(
+                            'Completed',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF182c55),
+                            ),
+                          ),
+                        ),
+                        ...completedTasks
+                            .map((task) => TaskCard(task: task))
+                            .toList(),
+                      ],
+                      if (incompleteTasks.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: Text(
+                            'Incomplete Tasks',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF182c55),
+                            ),
+                          ),
+                        ),
+                        ...incompleteTasks
+                            .map((task) => TaskCard(task: task))
+                            .toList(),
+                      ]
+                    ],
+                  ),
+                ),
+              SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(15),
+                    primary: Color(0xFF182c54),
+                  ),
+                  onPressed: () => _showCreateTaskDialog(context, ref),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            )
-          else
-            Expanded(
-              child: ListView(
-                children: [
-                  if (completedTasks.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: Text(
-                        'Completed',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF182c55),
-                        ),
-                      ),
-                    ),
-                    ...completedTasks
-                        .map((task) => TaskCard(task: task))
-                        .toList(),
-                  ],
-                  if (incompleteTasks.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: Text(
-                        'Incomplete Tasks',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF182c55),
-                        ),
-                      ),
-                    ),
-                    ...incompleteTasks
-                        .map((task) => TaskCard(task: task))
-                        .toList(),
-                  ]
-                ],
-              ),
-            ),
-          SizedBox(height: 16.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(15),
-                primary: Color(0xFF182c54),
-              ),
-              onPressed: () => _showCreateTaskDialog(context, ref),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-        ],
+              SizedBox(height: 10),
+            ],
+          );
+        },
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error: $err')),
       ),
     );
   }

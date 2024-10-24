@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:etaask/services/taskService.dart';
+
 import '../../database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -33,8 +35,8 @@ class TaskCard extends ConsumerWidget {
   final Color? completed =
       Color.lerp(Colors.greenAccent, Color(0xFF18da55), 0.5);
   final Color? due = Color.lerp(Colors.redAccent, Color(0xff800000), 0.7);
-
   TaskCard({required this.task});
+  var taskService = TaskService();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,8 +79,7 @@ class TaskCard extends ConsumerWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            DatabaseHelper dbHelper = DatabaseHelper();
-                            dbHelper.deleteTask(task.id!);
+                            taskService.deleteTask(task.id);
                             ref
                                 .read(taskProvider.notifier)
                                 .removeTask(task.id!);
@@ -111,8 +112,7 @@ class TaskCard extends ConsumerWidget {
                 taskId: task.id!,
                 onEdit: () => _showEditTaskDialog(context, task, ref),
                 onDelete: () {
-                  DatabaseHelper dbHelper = DatabaseHelper();
-                  dbHelper.deleteTask(task.id!);
+                  taskService.deleteTask(task.id);
                   ref.read(taskProvider.notifier).removeTask(task.id!);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Task deleted successfully')),

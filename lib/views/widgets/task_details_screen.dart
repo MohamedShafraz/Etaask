@@ -1,3 +1,4 @@
+import 'package:etaask/services/taskService.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../database/database_helper.dart';
@@ -23,16 +24,17 @@ class TaskDetailsScreen extends StatefulWidget {
 
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late Future<Task?> _taskFuture;
-
+  var _taskService = TaskService();
   @override
   void initState() {
-    super.initState();
     _taskFuture = _fetchTaskDetails(widget.taskId);
+    super.initState();
   }
 
   Future<Task?> _fetchTaskDetails(int id) async {
-    var db = DatabaseHelper();
-    return await db.getTaskById(id);
+    var result = _taskService.getTaskById(id);
+
+    return result;
   }
 
   void _refreshTaskDetails() {
@@ -172,7 +174,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         ElevatedButton.icon(
                           onPressed: () {
                             widget.onDelete();
-                            Navigator.pop(context);
+                            Navigator.canPop(context);
                           },
                           icon: Icon(Icons.delete, color: Colors.white),
                           label: Text('Delete',

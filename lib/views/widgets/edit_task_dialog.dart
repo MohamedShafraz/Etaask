@@ -1,3 +1,5 @@
+import 'package:etaask/services/taskService.dart';
+
 import '../../database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +32,7 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
   final TextEditingController descriptionController = TextEditingController();
   DateTime? _selectedDueDate;
   bool _isCompleted = false;
+  var _taskService = TaskService();
 
   @override
   void initState() {
@@ -175,9 +178,9 @@ class _EditTaskDialogState extends ConsumerState<EditTaskDialog> {
               isCompleted: _isCompleted,
             );
 
-            DatabaseHelper dbHelper = DatabaseHelper();
-            await dbHelper.updateTask(updatedTask);
-
+            // DatabaseHelper dbHelper = DatabaseHelper();
+            // await dbHelper.updateTask(updatedTask);
+            var result = _taskService.updateTask(updatedTask);
             ref.read(taskProvider.notifier).editTask(updatedTask);
 
             widget.onUpdate(updatedTask);
